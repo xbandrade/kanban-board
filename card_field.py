@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from tktooltip import ToolTip
 
 
 class CardField(ctk.CTkTextbox):
@@ -11,6 +12,21 @@ class CardField(ctk.CTkTextbox):
         self.move_card_button = self.create_move_card_button()
         self.edit_card_button = self.create_edit_card_button()
         self.remove_card_button = self.create_remove_card_button()
+        self.grid_buttons(row=len(self.master.cards))
+
+    def grid_buttons(self, row, col = 1):
+        self.move_card_button.grid(
+            row=row, column=col,
+            pady=(0, 20), padx=(3, 0), sticky='n'
+        )
+        self.edit_card_button.grid(
+            row=row, column=col,
+            pady=(0, 20), padx=(3, 0)
+        )
+        self.remove_card_button.grid(
+            row=row, column=col,
+            pady=(0, 20), padx=(3, 0), sticky='s'
+        )
 
     def create_move_card_button(self):
         return ctk.CTkButton(
@@ -37,14 +53,15 @@ class CardField(ctk.CTkTextbox):
         )
 
     def move_card(self):
-        if self.master.next:  # FIXME: FIX THIS (?)
-            text = self.get('0.0', 'end')
+        if self.master.next:
+            self.master.next.add_card(self.get('0.0', 'end'))
             self.remove_card()
-            self.master.next.add_card(
-                text=text,
-            )
         else:
             print('No columns to move this card')
+
+    def _fix_cards_ids(self):
+        for card in self.master.cards[self.id:]:
+            card.id -= 1
 
     def edit_card(self):
         self.flip_entry_state()
@@ -52,12 +69,10 @@ class CardField(ctk.CTkTextbox):
         self.edit_card_button.configure(text=text)
 
     def remove_card(self):
+        self.master.cards[self.id] = None
         self.move_card_button.destroy()
         self.edit_card_button.destroy()
         self.remove_card_button.destroy()
-        del self.master.cards[self.id]
-        for card in self.master.cards[self.id:]:
-            card.id -= 1
         self.destroy()
 
     def flip_entry_state(self):

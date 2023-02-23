@@ -17,7 +17,9 @@ class ColumnFrame(ctk.CTkScrollableFrame):
         self.master = master
         self.id = id
         self.next = None
+        self.label = None
         self.column_color = kwargs.get('border_color', '#000000')
+        self._scrollbar.configure(width=7, border_spacing=1, corner_radius=100)
 
     def add_card(self, text):
         new_card = CardField(
@@ -37,18 +39,13 @@ class ColumnFrame(ctk.CTkScrollableFrame):
             row=row, column=0,
             pady=(0, 20),
         )
-        new_card.move_card_button.grid(
-            row=row, column=1,
-            pady=(0, 20), padx=(3, 0), sticky='n'
-        )
-        new_card.edit_card_button.grid(
-            row=row, column=1,
-            pady=(0, 20), padx=(3, 0)
-        )
-        new_card.remove_card_button.grid(
-            row=row, column=1,
-            pady=(0, 20), padx=(3, 0), sticky='s'
-        )
         new_card.id = row
         self.cards.append(new_card)
 
+    def edit_column_name(self, button):
+        curr_text = self.label.cget('text')
+        dialog = ctk.CTkInputDialog(
+            text='Enter a new name for the column', title='Edit Column'
+        )
+        self.label.configure(text=dialog.get_input().strip() or curr_text)
+        

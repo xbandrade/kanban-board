@@ -2,6 +2,7 @@ import random
 import tkinter as tk
 
 import customtkinter as ctk
+from tktooltip import ToolTip
 
 from custom_frames import ColumnFrame, MyFrame
 
@@ -37,11 +38,21 @@ class App(ctk.CTk):
         )
 
     def create_sidebar_buttons(self):
-        self.create_button(
-            text='Add Column', row=1, col=0, state='disabled'
+        add_column_button = self.create_button(
+            text='Add Column', row=1, col=0, command=self.add_new_column
         )
-        self.create_button(
+        ToolTip(
+            add_column_button, 'Insert a new column to the board',
+            delay=0, fg="#ffffff", bg="#1c1c1c", 
+            padx=10, pady=10, font=('Verdana', 10)
+        )
+        add_card_button = self.create_button(
             text='Add Card', row=2, col=0, command=self.add_new_card
+        )
+        ToolTip(
+            add_card_button, 'Insert a new card to the first column',
+            delay=0, fg="#ffffff", bg="#1c1c1c",
+            padx=10, pady=10, font=('Verdana', 10)
         )
         self.create_button(
             text='Save Board', row=3, col=0, state='disabled'
@@ -87,13 +98,34 @@ class App(ctk.CTk):
                 self.frame, width=260, border_color=border_color,
                 fg_color='#626567',
                 corner_radius=10, border_width=3,
-                name=title,
-                id=index,
+                name=title, id=index,
+                scrollbar_button_color=border_color,
             )
             new_column.grid(
                 row=row, column=col, padx=(20, 0),
                 pady=(5, 40), sticky='news',
+            )            
+            label_frame = ctk.CTkFrame(
+                master=self.frame,
+                width=260,
+                border_width=1,
+                border_color=new_column.column_color,
+                bg_color=new_column.column_color,
+                fg_color='#626567',
             )
+            label_frame.grid(row=0, column=index + 1, pady=0, padx=(20, 0))
+            new_column.label = ctk.CTkLabel(
+                master=label_frame,
+                text=title,
+                text_color='#c9c9c9',
+                font=('Verdana', 12),
+            )
+            new_column.label.grid(row=0, column=0, padx=25)
+            new_column.label.bind(
+                '<Button-1>', command=new_column.edit_column_name
+            )
+            if index > 0:
+                self.frame.columns[-1].next = new_column
             return new_column
 
     def create_default_columns(self, default_cols):
@@ -103,33 +135,28 @@ class App(ctk.CTk):
                     row=1, col=i + 1, title=col_title, index=i
                 )
             )
-            label_frame = ctk.CTkFrame(
-                master=self.frame,
-                width=260,
-                border_width=1,
-                border_color=self.frame.columns[-1].column_color,
-                bg_color=self.frame.columns[-1].column_color,
-                fg_color='#3B3B3B',
-            )
-            label_frame.grid(row=0, column=i + 1, pady=0, padx=(20, 0))
-            label = ctk.CTkLabel(
-                master=label_frame,
-                text=col_title,
-                text_color=self.frame.columns[-1].column_color,
-            )
-            label.grid(row=0, column=0, padx=25)
-            if i > 0:
-                self.frame.columns[-2].next = self.frame.columns[-1]
+        self.add_new_card(0, 'Write something here')
 
     def change_dark_mode(self):
         ctk.set_appearance_mode(self.check_var.get())
     
-    def add_new_card(self, column=None, text='New Card...'):
-        column_obj = self.frame.columns[column or 0]
+    def add_new_card(self, column=0, text='New Card...'):
+        column_obj = self.frame.columns[min(column, len(self.frame.columns) - 1)]
         column_obj.add_card(text)
 
-    def add_new_column(self, column_name):
-        ...
+    def add_new_column(self, column_name='New Column'):
+        dialog = ctk.CTkInputDialog(
+            text='Enter a name for the new column', title='New Column'
+        )
+        if new_text := dialog.get_input():
+            index = len(self.frame.columns)
+            self.frame.columns.append(
+                self.create_new_column(
+                    row=1, col=index + 1, title=column_name, index=index
+                )
+            )
+            self.frame.columns[-1].label.configure(text=new_text)
+        
     
     def edit_card(self, card, button):
         card.flip_entry_state()
