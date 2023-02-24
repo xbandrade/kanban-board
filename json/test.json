@@ -1,0 +1,28 @@
+{
+    "0": {
+        "name": "New Column",
+        "id": 0,
+        "cards": {
+            "0": {
+                "id": 0,
+                "text": "Testing"
+            },
+            "2": {
+                "id": 2,
+                "text": "New Card..."
+            }
+        },
+        "column_color": "#F7E13D"
+    },
+    "1": {
+        "name": "Done two",
+        "id": 1,
+        "cards": {
+            "0": {
+                "id": 0,
+                "text": "Test2"
+            }
+        },
+        "column_color": "#0B04D1"
+    }
+}

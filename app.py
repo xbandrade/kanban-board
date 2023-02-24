@@ -1,11 +1,14 @@
 import json
+import os
 import random
 import tkinter as tk
+from string import ascii_lowercase
 
 import customtkinter as ctk
 from tktooltip import ToolTip
 
-from custom_frames import ColumnFrame, CustomConfirmationBox, MainFrame
+from custom_frames import (ColumnFrame, CustomChoiceBox, CustomConfirmationBox,
+                           MainFrame)
 
 
 class App(ctk.CTk):
@@ -177,8 +180,17 @@ class App(ctk.CTk):
             )
             self.frame.columns[-1].label.configure(text=new_text)
     
-    def save_board(self):    
-        with open('json/data.json', 'w') as f:
+    def save_board(self):      
+        board_list = os.scandir('json/')
+        dialog = CustomChoiceBox(
+            title='Save Board', 
+            message='Save board as:',
+            items=[b.name[:-5] for b in board_list],
+            editable_option=True
+        )
+        board_name = dialog.get_input()
+        board_name = board_name if board_name else ''.join(random.choices(ascii_lowercase, k=8))
+        with open(f'json/{board_name}.json', 'w') as f:
             f.write(
                 json.dumps(
                     {col.id: col.asdict() for col in self.frame.columns},
@@ -187,14 +199,21 @@ class App(ctk.CTk):
             )
 
     def load_board(self):
-        self.clear_frame()
-        with open('json/data.json', 'r') as f:
-            columns = json.loads(f.read())
-            for col in columns:
-                self.deserialize_obj(columns[col])
-        for i in range(1, len(self.frame.columns)):
-            self.frame.columns[i - 1].next = self.frame.columns[i]
-        
+        board_list = os.scandir('json/')
+        load_dialog = CustomChoiceBox(
+            title='Load Board', 
+            message='Choose a board to load',
+            items=[b.name[:-5] for b in board_list],
+            editable_option=False
+        )
+        if board := load_dialog.get_input():
+            self.clear_frame()
+            with open(f'json/{board}.json', 'r') as f:
+                columns = json.loads(f.read())
+                for col in columns:
+                    self.deserialize_obj(columns[col])
+            for i in range(1, len(self.frame.columns)):
+                self.frame.columns[i - 1].next = self.frame.columns[i]
 
     def clear_frame(self):
         for col in self.frame.columns:

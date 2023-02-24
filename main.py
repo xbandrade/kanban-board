@@ -21,5 +21,5 @@ def add_test_cards(app):
 
 if __name__ == '__main__':
     app = App(1200, 600)
-    add_test_cards(app)
+    # add_test_cards(app)
     app.mainloop()
