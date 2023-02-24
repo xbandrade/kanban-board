@@ -1,5 +1,4 @@
 import customtkinter as ctk
-from _tkinter import TclError
 
 
 class CardField(ctk.CTkTextbox):
@@ -12,7 +11,10 @@ class CardField(ctk.CTkTextbox):
         self.move_card_button = self.create_move_card_button()
         self.edit_card_button = self.create_edit_card_button()
         self.remove_card_button = self.create_remove_card_button()
+        self.bind('<Button-1>', self.make_card_editable)
+        self.bind('<Return>', self.save_card)
         self.grid_buttons(row=len(self.master.cards))
+        self.configure(cursor='pencil')
 
     def asdict(self):
         return {
@@ -45,8 +47,8 @@ class CardField(ctk.CTkTextbox):
         
     def create_edit_card_button(self):
         return ctk.CTkButton(
-            master=self.master, text='✎', 
-            command=self.edit_card,
+            master=self.master, text='↗', 
+            command=self.make_card_editable,
             width=5,
             fg_color=self.master.column_color,
         )
@@ -70,10 +72,17 @@ class CardField(ctk.CTkTextbox):
         for card in self.master.cards[self.id:]:
             card.id -= 1
 
-    def edit_card(self):
-        self.flip_entry_state()
-        text = ['✎', '✓'][(self.edit_card_button._text == '✎')]
-        self.edit_card_button.configure(text=text)
+    def make_card_editable(self, event=None):
+        if self.entry_disabled:
+            self.flip_entry_state()
+            self.configure(cursor='arrow')
+        
+    def save_card(self, event=None):
+        if not self.entry_disabled:
+            self.flip_entry_state()
+            self.configure(cursor='pencil')
+        
+    
 
     def remove_card(self):
         self.master.cards[self.id] = None

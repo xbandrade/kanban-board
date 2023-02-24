@@ -16,16 +16,17 @@ class App(ctk.CTk):
         super().__init__()
         self.title('KBBoard')
         self.geometry(f'{width}x{height}')
-        self.resizable(False, False)
+        # self.resizable(False, False)
         self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.sidebar_frame, self.logo_label = self._create_sidebar_frame()
         self.frame = MainFrame(
-            self, width=width - 260, height=height - 30,
+            self, width=width, height=height,
             orientation='horizontal', corner_radius=15,
         )
-        self.frame.grid(row=0, column=1, padx=10, pady=10, columnspan=10)
+        self.frame.grid(row=0, column=1, padx=10, pady=10)
         self.frame.grid_rowconfigure(1, weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
-        self.sidebar_frame, self.logo_label = self._create_sidebar_frame()
         self._create_sidebar_buttons()
         self.check_var = tk.StringVar(value='Dark')
         self.dark_mode_optionmenu = ctk.CTkCheckBox(
@@ -38,7 +39,7 @@ class App(ctk.CTk):
             row=8, column=0, padx=20, pady=(10, 10), sticky='s'
         )
         self._create_default_columns(
-            ['To Do', 'Currently Doing', 'Testing', 'Done']
+            ['To Do', 'Currently Doing', 'Testing', 'Done', 'Old Projects']
         )
 
     def _create_sidebar_buttons(self):
@@ -88,7 +89,7 @@ class App(ctk.CTk):
             self, width=140, corner_radius=15
         )
         sidebar_frame.grid(
-            row=0, column=0, sticky='news', padx=10, pady=10
+            row=0, column=0, sticky='nws', padx=10, pady=10
         )
         sidebar_frame.grid_rowconfigure((0, 1, 2, 3, 4, 5, 8), weight=1)
         logo_label = ctk.CTkLabel(

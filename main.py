@@ -17,9 +17,10 @@ def add_test_cards(app):
     app.add_new_card(1, 'This one as well')
     app.add_new_card(2, 'This is ready for testing')
     app.add_new_card(3, 'This is already done!')
+    app.add_new_card(4, 'This is an old project')
   
 
 if __name__ == '__main__':
-    app = App(1200, 600)
-    # add_test_cards(app)
+    app = App(1920, 1080)
+    add_test_cards(app)
     app.mainloop()
