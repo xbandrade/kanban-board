@@ -1,11 +1,60 @@
-import json
-
 import customtkinter as ctk
 
 from card_field import CardField
 
 
-class MyFrame(ctk.CTkScrollableFrame):
+class CustomConfirmationBox(ctk.CTkToplevel):
+    def __init__(self, title, message, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.geometry('300x130')
+        self.resizable(False, False)
+        self.message = message
+        self.title(title)
+        self.protocol('WM_DELETE_WINDOW', self._on_closing)
+        self.after(100, self._create_widgets)
+        self.lift()
+        self.attributes('-topmost', True)
+        self._choice = False
+        self.bind('<Escape>', self._on_closing)
+        self.grab_set()
+
+    def _create_widgets(self):
+        self.grid_columnconfigure((0, 1), weight=1)
+        self.rowconfigure(0, weight=1)
+        self.label = ctk.CTkLabel(self, text=self.message)
+        self.label.grid(row=0, column=0, columnspan=2, padx=20, pady=(20, 0), sticky='ew')
+        yes_button = ctk.CTkButton(
+            self, 
+            text='Yes',
+            command=self._yes_event,
+        )
+        no_button = ctk.CTkButton(
+            self, 
+            text='No',
+            command=self._no_event,
+        )
+        yes_button.grid(row=1, column=0, padx=20, pady=20, sticky='ew')
+        no_button.grid(row=1, column=1, padx=20, pady=20, sticky='ew')
+
+    def _on_closing(self, event=None):
+        self.grab_release()
+        self.destroy()
+
+    def _yes_event(self, event=None):
+        self._choice = True
+        self.grab_release()
+        self.destroy()
+
+    def _no_event(self, event=None):
+        self._choice = False
+        self.grab_release()
+        self.destroy()
+
+    def get_input(self):
+        self.master.wait_window(self)
+        return self._choice
+
+class MainFrame(ctk.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.columns = []
@@ -41,7 +90,7 @@ class ColumnFrame(ctk.CTkScrollableFrame):
             font=('Verdana', 12),
             border_color=self.column_color,
         )
-        row = len(self.cards) # if id < 0 else id
+        row = len(self.cards)
         new_card.insert('0.0', text)
         new_card.configure(state='disabled')
         new_card.grid(
@@ -51,7 +100,7 @@ class ColumnFrame(ctk.CTkScrollableFrame):
         new_card.id = row
         self.cards.append(new_card)
 
-    def edit_column_name(self, button):
+    def edit_column_name(self, button=None):
         curr_text = self.label.cget('text')
         dialog = ctk.CTkInputDialog(
             text='Enter a new name for the column', title='Edit Column'

@@ -3,13 +3,9 @@
         "name": "To Do",
         "id": 0,
         "cards": {
-            "1": {
-                "id": 1,
-                "text": "Something I have to do tomorrow"
-            },
-            "3": {
-                "id": 3,
-                "text": "New Card..."
+            "0": {
+                "id": 0,
+                "text": "Write something here"
             }
         },
         "column_color": "#DD5DF1"
@@ -18,13 +14,13 @@
         "name": "Currently Doing",
         "id": 1,
         "cards": {
-            "2": {
-                "id": 2,
-                "text": "This one as well"
+            "0": {
+                "id": 0,
+                "text": "This is what I am currently working on"
             },
             "3": {
                 "id": 3,
-                "text": "Write something here"
+                "text": "Something I have to do tomorrow"
             },
             "4": {
                 "id": 4,
@@ -37,17 +33,13 @@
         "name": "Testing",
         "id": 2,
         "cards": {
-            "0": {
-                "id": 0,
-                "text": "This is ready for testing"
-            },
             "1": {
                 "id": 1,
-                "text": "This is what I am currently working on"
+                "text": "I am also working on this"
             },
             "2": {
                 "id": 2,
-                "text": "I am also working on this"
+                "text": "This one as well"
             }
         },
         "column_color": "#FF9B31"
@@ -56,11 +48,22 @@
         "name": "Done",
         "id": 3,
         "cards": {
+            "1": {
+                "id": 1,
+                "text": "This is ready for testing"
+            }
+        },
+        "column_color": "#32D918"
+    },
+    "4": {
+        "name": "oioioi",
+        "id": 4,
+        "cards": {
             "0": {
                 "id": 0,
                 "text": "This is already done!"
             }
         },
-        "column_color": "#32D918"
+        "column_color": "#F7E13D"
     }
 }

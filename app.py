@@ -1,12 +1,11 @@
 import json
 import random
 import tkinter as tk
-from tkinter.messagebox import askyesno
 
 import customtkinter as ctk
 from tktooltip import ToolTip
 
-from custom_frames import ColumnFrame, MyFrame
+from custom_frames import ColumnFrame, CustomConfirmationBox, MainFrame
 
 
 class App(ctk.CTk):
@@ -16,31 +15,31 @@ class App(ctk.CTk):
         self.geometry(f'{width}x{height}')
         self.resizable(False, False)
         self.grid_rowconfigure(0, weight=1)
-        self.frame = MyFrame(
+        self.frame = MainFrame(
             self, width=width - 260, height=height - 30,
             orientation='horizontal', corner_radius=15,
         )
         self.frame.grid(row=0, column=1, padx=10, pady=10, columnspan=10)
         self.frame.grid_rowconfigure(1, weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
-        self.sidebar_frame, self.logo_label = self.create_sidebar_frame()
-        self.create_sidebar_buttons()
+        self.sidebar_frame, self.logo_label = self._create_sidebar_frame()
+        self._create_sidebar_buttons()
         self.check_var = tk.StringVar(value='Dark')
         self.dark_mode_optionmenu = ctk.CTkCheckBox(
             self.sidebar_frame,
             text='Dark Mode', variable=self.check_var,
             onvalue='Dark', offvalue='Light',
-            command=self.change_dark_mode
+            command=self._change_dark_mode
         )
         self.dark_mode_optionmenu.grid(
             row=8, column=0, padx=20, pady=(10, 10), sticky='s'
         )
-        self.create_default_columns(
+        self._create_default_columns(
             ['To Do', 'Currently Doing', 'Testing', 'Done']
         )
 
-    def create_sidebar_buttons(self):
-        add_column_button = self.create_button(
+    def _create_sidebar_buttons(self):
+        add_column_button = self._create_new_button(
             text='Add Column', row=1, col=0, command=self.add_new_column
         )
         ToolTip(
@@ -48,7 +47,7 @@ class App(ctk.CTk):
             delay=0, fg="#ffffff", bg="#1c1c1c", 
             padx=10, pady=10, font=('Verdana', 10)
         )
-        add_card_button = self.create_button(
+        add_card_button = self._create_new_button(
             text='Add Card', row=2, col=0, command=self.add_new_card
         )
         ToolTip(
@@ -56,7 +55,7 @@ class App(ctk.CTk):
             delay=0, fg="#ffffff", bg="#1c1c1c",
             padx=10, pady=10, font=('Verdana', 10)
         )
-        save_board_button = self.create_button(
+        save_board_button = self._create_new_button(
             text='Save Board', row=3, col=0, command=self.save_board
         )
         ToolTip(
@@ -64,7 +63,7 @@ class App(ctk.CTk):
             delay=0, fg="#ffffff", bg="#1c1c1c",
             padx=10, pady=10, font=('Verdana', 10)
         )
-        load_board_button = self.create_button(
+        load_board_button = self._create_new_button(
             text='Load Board', row=4, col=0, command=self.load_board
         )
         ToolTip(
@@ -72,7 +71,7 @@ class App(ctk.CTk):
             delay=0, fg="#ffffff", bg="#1c1c1c",
             padx=10, pady=10, font=('Verdana', 10)
         )
-        clear_board_button = self.create_button(
+        clear_board_button = self._create_new_button(
             text='Create New Board', row=5, col=0, command=self.clear_board
         )
         ToolTip(
@@ -81,7 +80,7 @@ class App(ctk.CTk):
             padx=10, pady=10, font=('Verdana', 10)
         )
 
-    def create_sidebar_frame(self):
+    def _create_sidebar_frame(self):
         sidebar_frame = ctk.CTkFrame(
             self, width=140, corner_radius=15
         )
@@ -94,10 +93,10 @@ class App(ctk.CTk):
                 size=20, weight='bold'
             )
         )
-        logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        logo_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky='ew')
         return sidebar_frame, logo_label
 
-    def create_button(self, text, row, col, command=None, state='normal'):
+    def _create_new_button(self, text, row, col, command=None, state='normal'):
         sidebar_button = ctk.CTkButton(
             self.sidebar_frame, 
             command=command, 
@@ -107,7 +106,7 @@ class App(ctk.CTk):
         sidebar_button.grid(row=row, column=col, padx=20, pady=5, sticky='n')
         return sidebar_button
 
-    def create_new_column(self, row, col, title, index, color=None):
+    def _create_new_column(self, row, col, title, index, color=None):
             border_color = color or '#' + ''.join(
                 random.choices('0123456789ABCDEF', k=6)
             )
@@ -136,6 +135,7 @@ class App(ctk.CTk):
                 text=title,
                 text_color='#c9c9c9',
                 font=('Verdana', 12),
+                cursor='hand2'
             )
             new_column.label.grid(row=0, column=0, padx=25)
             new_column.label.bind(
@@ -145,16 +145,16 @@ class App(ctk.CTk):
                 self.frame.columns[-1].next = new_column
             return new_column
 
-    def create_default_columns(self, default_cols):
+    def _create_default_columns(self, default_cols):
         for i, col_title in enumerate(default_cols):
             self.frame.columns.append(
-                self.create_new_column(
+                self._create_new_column(
                     row=1, col=i + 1, title=col_title, index=i
                 )
             )
         self.add_new_card(0, 'Write something here')
 
-    def change_dark_mode(self):
+    def _change_dark_mode(self):
         ctk.set_appearance_mode(self.check_var.get())
     
     def add_new_card(self, column=0, text='New Card...'):
@@ -170,20 +170,13 @@ class App(ctk.CTk):
         if new_text:
             index = len(self.frame.columns) if index < 0 else index
             self.frame.columns.append(
-                self.create_new_column(
+                self._create_new_column(
                     row=1, col=index + 1, title=new_text, index=index,
                     color=color,
                 )
             )
             self.frame.columns[-1].label.configure(text=new_text)
-        
     
-    def edit_card(self, card, button):
-        card.flip_entry_state()
-        text = ['✎', '✓'][(button._text == '✎')]
-        button.configure(text=text)
-
-
     def save_board(self):    
         with open('json/data.json', 'w') as f:
             f.write(
@@ -228,25 +221,13 @@ class App(ctk.CTk):
                 text=cards[card].get('text', '').strip(),
             )
 
-
     def clear_board(self):
-        ask = askyesno(
+        dialog = CustomConfirmationBox(
             title='Clear Board', 
-            message='Are you sure you want to clear the board?',
+            message='Are you sure you want to clear the board?'
         )
-        if ask:
+        if dialog.get_input():
             self.clear_frame()
             self.add_new_column(
                 column_name='New Column',
             )
-
-
-
-
-class ToplevelWindow(ctk.CTkToplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.geometry("400x300")
-
-        self.label = ctk.CTkLabel(self, text="ToplevelWindow")
-        self.label.pack(padx=20, pady=20)
