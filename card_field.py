@@ -1,5 +1,7 @@
 import customtkinter as ctk
 
+from popup_card import PopupCard
+
 
 class CardField(ctk.CTkTextbox):
     def __init__(self, master, **kwargs):
@@ -7,12 +9,11 @@ class CardField(ctk.CTkTextbox):
         self.master = master
         self.id = -1
         self.entry_states = ['normal', 'disabled']
-        self.entry_disabled = True
+        self.entry_disabled = False
+        self.has_popup = False
         self.move_card_button = self.create_move_card_button()
-        self.edit_card_button = self.create_edit_card_button()
+        self.popup_button = self.create_popup_button()
         self.remove_card_button = self.create_remove_card_button()
-        self.bind('<Button-1>', self.make_card_editable)
-        self.bind('<Return>', self.save_card)
         self.grid_buttons(row=len(self.master.cards))
         self.configure(cursor='pencil')
 
@@ -22,13 +23,12 @@ class CardField(ctk.CTkTextbox):
             'text': self.get('0.0', 'end').strip(),
         }
 
-
     def grid_buttons(self, row, col = 1):
         self.move_card_button.grid(
             row=row, column=col,
             pady=(0, 20), padx=(3, 0), sticky='n'
         )
-        self.edit_card_button.grid(
+        self.popup_button.grid(
             row=row, column=col,
             pady=(0, 20), padx=(3, 0)
         )
@@ -42,15 +42,13 @@ class CardField(ctk.CTkTextbox):
             master=self.master, text='→', 
             command=self.move_card,
             width=5,
-            fg_color=self.master.column_color,
         )
         
-    def create_edit_card_button(self):
+    def create_popup_button(self):
         return ctk.CTkButton(
-            master=self.master, text='↗', 
-            command=self.make_card_editable,
-            width=5,
-            fg_color=self.master.column_color,
+            master=self.master, text='↑', 
+            command=self.popup_card,
+            width=28,
         )
     
     def create_remove_card_button(self):
@@ -58,7 +56,6 @@ class CardField(ctk.CTkTextbox):
             master=self.master, text='✖', 
             command=self.remove_card,
             width=5,
-            fg_color=self.master.column_color,
         )
 
     def move_card(self):
@@ -72,22 +69,20 @@ class CardField(ctk.CTkTextbox):
         for card in self.master.cards[self.id:]:
             card.id -= 1
 
-    def make_card_editable(self, event=None):
-        if self.entry_disabled:
-            self.flip_entry_state()
-            self.configure(cursor='arrow')
-        
-    def save_card(self, event=None):
-        if not self.entry_disabled:
-            self.flip_entry_state()
-            self.configure(cursor='pencil')
-        
-    
+    def popup_card(self):
+        if not self.has_popup:
+            self.has_popup = True
+            PopupCard(
+                card=self,
+                fg_color=self.master.column_color,
+                highlightthickness=4, 
+                highlightbackground='black',
+            )   
 
     def remove_card(self):
         self.master.cards[self.id] = None
         self.move_card_button.destroy()
-        self.edit_card_button.destroy()
+        self.popup_button.destroy()
         self.remove_card_button.destroy()
         self.destroy()
 

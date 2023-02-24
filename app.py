@@ -7,16 +7,15 @@ from string import ascii_lowercase
 import customtkinter as ctk
 from tktooltip import ToolTip
 
-from custom_frames import (ColumnFrame, CustomChoiceBox, CustomConfirmationBox,
-                           MainFrame)
+from custom_dialogs import CustomChoiceBox, CustomConfirmationBox
+from custom_frames import ColumnFrame, MainFrame
 
 
 class App(ctk.CTk):
     def __init__(self, width, height):
         super().__init__()
         self.title('KBBoard')
-        self.geometry(f'{width}x{height}')
-        # self.resizable(False, False)
+        self.geometry('1300x650')
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
         self.sidebar_frame, self.logo_label = self._create_sidebar_frame()
@@ -190,14 +189,15 @@ class App(ctk.CTk):
             editable_option=True
         )
         board_name = dialog.get_input()
-        board_name = board_name if board_name else ''.join(random.choices(ascii_lowercase, k=8))
-        with open(f'json/{board_name}.json', 'w') as f:
-            f.write(
-                json.dumps(
-                    {col.id: col.asdict() for col in self.frame.columns},
-                    indent=4
+        if board_name is not None:
+            board_name = board_name if board_name else ''.join(random.choices(ascii_lowercase, k=8))
+            with open(f'json/{board_name}.json', 'w') as f:
+                f.write(
+                    json.dumps(
+                        {col.id: col.asdict() for col in self.frame.columns},
+                        indent=4
+                    )
                 )
-            )
 
     def load_board(self):
         board_list = os.scandir('json/')
