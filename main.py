@@ -9,7 +9,6 @@ ctk.set_default_color_theme('dark-blue')
 
 random.seed(8179)
 
-
 def add_test_cards(app):
     app.add_new_card(0, 'Something I have to do tomorrow')
     app.add_new_card(0, 'Something else I have to do this week')

@@ -3,13 +3,13 @@
         "name": "To Do",
         "id": 0,
         "cards": {
-            "0": {
-                "id": 0,
-                "text": "New Card...\n\n\n"
-            },
             "1": {
                 "id": 1,
-                "text": "New Card...\n\n"
+                "text": "Something I have to do tomorrow"
+            },
+            "3": {
+                "id": 3,
+                "text": "New Card..."
             }
         },
         "column_color": "#DD5DF1"
@@ -20,7 +20,15 @@
         "cards": {
             "2": {
                 "id": 2,
-                "text": "New Card...\n\n"
+                "text": "This one as well"
+            },
+            "3": {
+                "id": 3,
+                "text": "Write something here"
+            },
+            "4": {
+                "id": 4,
+                "text": "Something else I have to do this week"
             }
         },
         "column_color": "#BC3A25"
@@ -31,15 +39,15 @@
         "cards": {
             "0": {
                 "id": 0,
-                "text": "New Card...\n\n\n\n\n\n\n"
+                "text": "This is ready for testing"
             },
             "1": {
                 "id": 1,
-                "text": "New Card...\n\n\n\n\n\n\n"
+                "text": "This is what I am currently working on"
             },
             "2": {
                 "id": 2,
-                "text": "New Card...\n\n\n\n"
+                "text": "I am also working on this"
             }
         },
         "column_color": "#FF9B31"
@@ -50,19 +58,7 @@
         "cards": {
             "0": {
                 "id": 0,
-                "text": "This is already done!\n\n\n\n\n"
-            },
-            "1": {
-                "id": 1,
-                "text": "I am also working on this\n\n\n\n\n\n\n"
-            },
-            "2": {
-                "id": 2,
-                "text": "This one as well\n\n\n\n\n\n\n"
-            },
-            "3": {
-                "id": 3,
-                "text": "New Card...\n\n\n\n\n\n\n\n"
+                "text": "This is already done!"
             }
         },
         "column_color": "#32D918"

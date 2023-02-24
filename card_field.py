@@ -17,7 +17,7 @@ class CardField(ctk.CTkTextbox):
     def asdict(self):
         return {
             'id': self.id,
-            'text': self.get('0.0', 'end'),
+            'text': self.get('0.0', 'end').strip(),
         }
 
 

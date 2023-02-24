@@ -56,5 +56,6 @@ class ColumnFrame(ctk.CTkScrollableFrame):
         dialog = ctk.CTkInputDialog(
             text='Enter a new name for the column', title='Edit Column'
         )
-        self.label.configure(text=dialog.get_input().strip() or curr_text)
+        text = dialog.get_input()
+        self.label.configure(text.strip() if text else curr_text)
         

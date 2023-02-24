@@ -1,7 +1,7 @@
 import json
 import random
 import tkinter as tk
-from turtle import title
+from tkinter.messagebox import askyesno
 
 import customtkinter as ctk
 from tktooltip import ToolTip
@@ -72,8 +72,13 @@ class App(ctk.CTk):
             delay=0, fg="#ffffff", bg="#1c1c1c",
             padx=10, pady=10, font=('Verdana', 10)
         )
-        self.create_button(
-            text='Create New Board', row=5, col=0, state='disabled'
+        clear_board_button = self.create_button(
+            text='Create New Board', row=5, col=0, command=self.clear_board
+        )
+        ToolTip(
+            clear_board_button, 'Clear the entire board',
+            delay=0, fg="#ffffff", bg="#1c1c1c",
+            padx=10, pady=10, font=('Verdana', 10)
         )
 
     def create_sidebar_frame(self):
@@ -166,7 +171,7 @@ class App(ctk.CTk):
             index = len(self.frame.columns) if index < 0 else index
             self.frame.columns.append(
                 self.create_new_column(
-                    row=1, col=index + 1, title=column_name, index=index,
+                    row=1, col=index + 1, title=new_text, index=index,
                     color=color,
                 )
             )
@@ -224,3 +229,24 @@ class App(ctk.CTk):
             )
 
 
+    def clear_board(self):
+        ask = askyesno(
+            title='Clear Board', 
+            message='Are you sure you want to clear the board?',
+        )
+        if ask:
+            self.clear_frame()
+            self.add_new_column(
+                column_name='New Column',
+            )
+
+
+
+
+class ToplevelWindow(ctk.CTkToplevel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.geometry("400x300")
+
+        self.label = ctk.CTkLabel(self, text="ToplevelWindow")
+        self.label.pack(padx=20, pady=20)
