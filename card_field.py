@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from tktooltip import ToolTip
+from _tkinter import TclError
 
 
 class CardField(ctk.CTkTextbox):
@@ -13,6 +13,13 @@ class CardField(ctk.CTkTextbox):
         self.edit_card_button = self.create_edit_card_button()
         self.remove_card_button = self.create_remove_card_button()
         self.grid_buttons(row=len(self.master.cards))
+
+    def asdict(self):
+        return {
+            'id': self.id,
+            'text': self.get('0.0', 'end'),
+        }
+
 
     def grid_buttons(self, row, col = 1):
         self.move_card_button.grid(

@@ -1,0 +1,70 @@
+{
+    "0": {
+        "name": "To Do",
+        "id": 0,
+        "cards": {
+            "0": {
+                "id": 0,
+                "text": "New Card...\n\n\n"
+            },
+            "1": {
+                "id": 1,
+                "text": "New Card...\n\n"
+            }
+        },
+        "column_color": "#DD5DF1"
+    },
+    "1": {
+        "name": "Currently Doing",
+        "id": 1,
+        "cards": {
+            "2": {
+                "id": 2,
+                "text": "New Card...\n\n"
+            }
+        },
+        "column_color": "#BC3A25"
+    },
+    "2": {
+        "name": "Testing",
+        "id": 2,
+        "cards": {
+            "0": {
+                "id": 0,
+                "text": "New Card...\n\n\n\n\n\n\n"
+            },
+            "1": {
+                "id": 1,
+                "text": "New Card...\n\n\n\n\n\n\n"
+            },
+            "2": {
+                "id": 2,
+                "text": "New Card...\n\n\n\n"
+            }
+        },
+        "column_color": "#FF9B31"
+    },
+    "3": {
+        "name": "Done",
+        "id": 3,
+        "cards": {
+            "0": {
+                "id": 0,
+                "text": "This is already done!\n\n\n\n\n"
+            },
+            "1": {
+                "id": 1,
+                "text": "I am also working on this\n\n\n\n\n\n\n"
+            },
+            "2": {
+                "id": 2,
+                "text": "This one as well\n\n\n\n\n\n\n"
+            },
+            "3": {
+                "id": 3,
+                "text": "New Card...\n\n\n\n\n\n\n\n"
+            }
+        },
+        "column_color": "#32D918"
+    }
+}

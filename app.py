@@ -1,5 +1,7 @@
+import json
 import random
 import tkinter as tk
+from turtle import title
 
 import customtkinter as ctk
 from tktooltip import ToolTip
@@ -54,11 +56,21 @@ class App(ctk.CTk):
             delay=0, fg="#ffffff", bg="#1c1c1c",
             padx=10, pady=10, font=('Verdana', 10)
         )
-        self.create_button(
-            text='Save Board', row=3, col=0, state='disabled'
+        save_board_button = self.create_button(
+            text='Save Board', row=3, col=0, command=self.save_board
         )
-        self.create_button(
-            text='Load Board', row=4, col=0, state='disabled'
+        ToolTip(
+            save_board_button, 'Save the current board',
+            delay=0, fg="#ffffff", bg="#1c1c1c",
+            padx=10, pady=10, font=('Verdana', 10)
+        )
+        load_board_button = self.create_button(
+            text='Load Board', row=4, col=0, command=self.load_board
+        )
+        ToolTip(
+            load_board_button, 'Load a saved board',
+            delay=0, fg="#ffffff", bg="#1c1c1c",
+            padx=10, pady=10, font=('Verdana', 10)
         )
         self.create_button(
             text='Create New Board', row=5, col=0, state='disabled'
@@ -90,8 +102,8 @@ class App(ctk.CTk):
         sidebar_button.grid(row=row, column=col, padx=20, pady=5, sticky='n')
         return sidebar_button
 
-    def create_new_column(self, row, col, title, index):
-            border_color = '#' + ''.join(
+    def create_new_column(self, row, col, title, index, color=None):
+            border_color = color or '#' + ''.join(
                 random.choices('0123456789ABCDEF', k=6)
             )
             new_column = ColumnFrame(
@@ -144,15 +156,18 @@ class App(ctk.CTk):
         column_obj = self.frame.columns[min(column, len(self.frame.columns) - 1)]
         column_obj.add_card(text)
 
-    def add_new_column(self, column_name='New Column'):
-        dialog = ctk.CTkInputDialog(
-            text='Enter a name for the new column', title='New Column'
-        )
-        if new_text := dialog.get_input():
-            index = len(self.frame.columns)
+    def add_new_column(self, column_name='', index=-1, color=None):
+        if not column_name:
+            dialog = ctk.CTkInputDialog(
+                text='Enter a name for the new column', title='New Column'
+            )
+        new_text = column_name or dialog.get_input()
+        if new_text:
+            index = len(self.frame.columns) if index < 0 else index
             self.frame.columns.append(
                 self.create_new_column(
-                    row=1, col=index + 1, title=column_name, index=index
+                    row=1, col=index + 1, title=column_name, index=index,
+                    color=color,
                 )
             )
             self.frame.columns[-1].label.configure(text=new_text)
@@ -163,6 +178,49 @@ class App(ctk.CTk):
         text = ['✎', '✓'][(button._text == '✎')]
         button.configure(text=text)
 
-    def sidebar_button_event(self):
-        print('click!')
-        ...
+
+    def save_board(self):    
+        with open('json/data.json', 'w') as f:
+            f.write(
+                json.dumps(
+                    {col.id: col.asdict() for col in self.frame.columns},
+                    indent=4
+                )
+            )
+
+    def load_board(self):
+        self.clear_frame()
+        with open('json/data.json', 'r') as f:
+            columns = json.loads(f.read())
+            for col in columns:
+                self.deserialize_obj(columns[col])
+        for i in range(1, len(self.frame.columns)):
+            self.frame.columns[i - 1].next = self.frame.columns[i]
+        
+
+    def clear_frame(self):
+        for col in self.frame.columns:
+            for card in col.cards:
+                if card:
+                    card.remove_card()
+            col.cards = []
+        self.frame.columns = []
+        for widget in self.frame.winfo_children():
+            for child in widget.winfo_children():
+                child.destroy()
+            widget.destroy()
+
+    def deserialize_obj(self, obj):
+        self.add_new_column(
+            column_name=obj.get('name', ''),
+            index=obj.get('id', -1),
+            color=obj.get('column_color', ''),
+        )
+        new_col = self.frame.columns[-1]
+        cards = obj.get('cards', [])
+        for card in cards:
+            new_col.add_card(
+                text=cards[card].get('text', '').strip(),
+            )
+
+
