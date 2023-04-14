@@ -23,7 +23,7 @@ class CardField(ctk.CTkTextbox):
             'text': self.get('0.0', 'end').strip(),
         }
 
-    def grid_buttons(self, row, col = 1):
+    def grid_buttons(self, row, col=1):
         self.move_card_button.grid(
             row=row, column=col,
             pady=(0, 20), padx=(3, 0), sticky='n'
@@ -39,21 +39,21 @@ class CardField(ctk.CTkTextbox):
 
     def create_move_card_button(self):
         return ctk.CTkButton(
-            master=self.master, text='→', 
+            master=self.master, text='→',
             command=self.move_card,
             width=5,
         )
-        
+
     def create_popup_button(self):
         return ctk.CTkButton(
-            master=self.master, text='↑', 
+            master=self.master, text='↑',
             command=self.popup_card,
             width=28,
         )
-    
+
     def create_remove_card_button(self):
         return ctk.CTkButton(
-            master=self.master, text='✖', 
+            master=self.master, text='✖',
             command=self.remove_card,
             width=5,
         )
@@ -75,9 +75,9 @@ class CardField(ctk.CTkTextbox):
             PopupCard(
                 card=self,
                 fg_color=self.master.column_color,
-                highlightthickness=4, 
+                highlightthickness=4,
                 highlightbackground='black',
-            )   
+            )
 
     def remove_card(self):
         self.master.cards[self.id] = None

@@ -47,7 +47,7 @@ class App(ctk.CTk):
         )
         ToolTip(
             add_column_button, 'Insert a new column to the board',
-            delay=0, fg="#ffffff", bg="#1c1c1c", 
+            delay=0, fg="#ffffff", bg="#1c1c1c",
             padx=10, pady=10, font=('Verdana', 10)
         )
         add_card_button = self._create_new_button(
@@ -101,8 +101,8 @@ class App(ctk.CTk):
 
     def _create_new_button(self, text, row, col, command=None, state='normal'):
         sidebar_button = ctk.CTkButton(
-            self.sidebar_frame, 
-            command=command, 
+            self.sidebar_frame,
+            command=command,
             text=text,
             state=state,
         )
@@ -110,43 +110,43 @@ class App(ctk.CTk):
         return sidebar_button
 
     def _create_new_column(self, row, col, title, index, color=None):
-            border_color = color or '#' + ''.join(
-                random.choices('0123456789ABCDEF', k=6)
-            )
-            new_column = ColumnFrame(
-                self.frame, width=260, border_color=border_color,
-                fg_color='#626567',
-                corner_radius=10, border_width=3,
-                name=title, id=index,
-                scrollbar_button_color=border_color,
-            )
-            new_column.grid(
-                row=row, column=col, padx=(20, 0),
-                pady=(5, 40), sticky='news',
-            )            
-            label_frame = ctk.CTkFrame(
-                master=self.frame,
-                width=260,
-                border_width=1,
-                border_color=new_column.column_color,
-                bg_color=new_column.column_color,
-                fg_color='#626567',
-            )
-            label_frame.grid(row=0, column=index + 1, pady=0, padx=(20, 0))
-            new_column.label = ctk.CTkLabel(
-                master=label_frame,
-                text=title,
-                text_color='#c9c9c9',
-                font=('Verdana', 12),
-                cursor='hand2'
-            )
-            new_column.label.grid(row=0, column=0, padx=25)
-            new_column.label.bind(
-                '<Button-1>', command=new_column.edit_column_name
-            )
-            if index > 0:
-                self.frame.columns[-1].next = new_column
-            return new_column
+        border_color = color or '#' + ''.join(
+            random.choices('0123456789ABCDEF', k=6)
+        )
+        new_column = ColumnFrame(
+            self.frame, width=260, border_color=border_color,
+            fg_color='#626567',
+            corner_radius=10, border_width=3,
+            name=title, id=index,
+            scrollbar_button_color=border_color,
+        )
+        new_column.grid(
+            row=row, column=col, padx=(20, 0),
+            pady=(5, 40), sticky='news',
+        )
+        label_frame = ctk.CTkFrame(
+            master=self.frame,
+            width=260,
+            border_width=1,
+            border_color=new_column.column_color,
+            bg_color=new_column.column_color,
+            fg_color='#626567',
+        )
+        label_frame.grid(row=0, column=index + 1, pady=0, padx=(20, 0))
+        new_column.label = ctk.CTkLabel(
+            master=label_frame,
+            text=title,
+            text_color='#c9c9c9',
+            font=('Verdana', 12),
+            cursor='hand2'
+        )
+        new_column.label.grid(row=0, column=0, padx=25)
+        new_column.label.bind(
+            '<Button-1>', command=new_column.edit_column_name
+        )
+        if index > 0:
+            self.frame.columns[-1].next = new_column
+        return new_column
 
     def _create_default_columns(self, default_cols):
         for i, col_title in enumerate(default_cols):
@@ -159,9 +159,11 @@ class App(ctk.CTk):
 
     def _change_dark_mode(self):
         ctk.set_appearance_mode(self.check_var.get())
-    
+
     def add_new_card(self, column=0, text='New Card...'):
-        column_obj = self.frame.columns[min(column, len(self.frame.columns) - 1)]
+        column_obj = self.frame.columns[
+            min(column, len(self.frame.columns) - 1)
+        ]
         column_obj.add_card(text)
 
     def add_new_column(self, column_name='', index=-1, color=None):
@@ -179,18 +181,20 @@ class App(ctk.CTk):
                 )
             )
             self.frame.columns[-1].label.configure(text=new_text)
-    
-    def save_board(self):      
+
+    def save_board(self):
         board_list = os.scandir('json/')
         dialog = CustomChoiceBox(
-            title='Save Board', 
+            title='Save Board',
             message='Save board as:',
             items=[b.name[:-5] for b in board_list],
-            editable_option=True
+            editable=True
         )
         board_name = dialog.get_input()
         if board_name is not None:
-            board_name = board_name if board_name else ''.join(random.choices(ascii_lowercase, k=8))
+            board_name = board_name if board_name else ''.join(
+                random.choices(ascii_lowercase, k=8)
+            )
             with open(f'json/{board_name}.json', 'w') as f:
                 f.write(
                     json.dumps(
@@ -202,10 +206,10 @@ class App(ctk.CTk):
     def load_board(self):
         board_list = os.scandir('json/')
         load_dialog = CustomChoiceBox(
-            title='Load Board', 
+            title='Load Board',
             message='Choose a board to load',
             items=[b.name[:-5] for b in board_list],
-            editable_option=False
+            editable=False
         )
         if board := load_dialog.get_input():
             self.clear_frame()
@@ -243,7 +247,7 @@ class App(ctk.CTk):
 
     def clear_board(self):
         dialog = CustomConfirmationBox(
-            title='Clear Board', 
+            title='Clear Board',
             message='Are you sure you want to clear the board?'
         )
         if dialog.get_input():
